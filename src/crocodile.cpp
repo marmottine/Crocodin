@@ -7,19 +7,21 @@
 
 Crocodile::Crocodile(Resources& resources):
         position(60, 100), direction(1,0), speed(0.0001),
-        gfxNose(resources.get<sf::Texture>("gfx/nose.png")),
-        gfxHead(resources.get<sf::Texture>("gfx/head.png")),
-        gfxBody(resources.get<sf::Texture>("gfx/body.png"))
+        gfxNose(resources.get<sf::Texture>("gfxbin/nose.png")),
+        gfxHead(resources.get<sf::Texture>("gfxbin/head.png")),
+        gfxBody(resources.get<sf::Texture>("gfxbin/body.png"))
 {
     shapes.resize(initial_length);
 
     // create the nose
     sf::Sprite& nose = shapes[0];
+    nose.setOrigin(60, 60);
     nose.setTexture(*gfxNose);
     nose.setPosition(sf::Vector2f(60.0, 60.0));
 
     // create the head
     sf::Sprite& head = shapes[1];
+    head.setOrigin(60, 60);
     head.setTexture(*gfxHead);
     head.setPosition(sf::Vector2f(80.0, 60.0));
 
@@ -27,6 +29,7 @@ Crocodile::Crocodile(Resources& resources):
     // start at 2 to compensate for the nose and head
     for (int i = 2; i < initial_length; ++i) {
         sf::Sprite& body = shapes[i];
+        body.setOrigin(60, 60);
         body.setTexture(*gfxBody);
         body.setPosition(sf::Vector2f(60 + 60*i, 0));
     }
@@ -90,17 +93,19 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
 
     sf::Sprite& head = shapes.front();
     head.setPosition(position);
+    head.setRotation(atan2(-shifting.y,
+            -shifting.x) * 180 / M_PI);
 
-    std::vector<sf::Sprite>::iterator shape_it;
+    // skip head
+    std::vector<sf::Sprite>::iterator cur_shape = shapes.begin();
+    std::vector<sf::Sprite>::iterator prev_shape = cur_shape++;
     unsigned dist_to_head = 0;
-    for (shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
-        // skip head
-        if (shape_it == shapes.begin()) {
-            continue;
-        }
-
+    for (; cur_shape != shapes.end(); prev_shape = cur_shape++) {
         dist_to_head += dist_between_shapes;
         sf::Vector2f new_pos = get_new_position(dist_to_head);
-        shape_it->setPosition(new_pos);
+        cur_shape->setPosition(new_pos);
+        const sf::Vector2f& prev_pos = prev_shape->getPosition();
+        cur_shape->setRotation(atan2(new_pos.y - prev_pos.y,
+                new_pos.x - prev_pos.x) * 180 / M_PI);
     }
 }

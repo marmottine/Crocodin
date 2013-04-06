@@ -12,7 +12,7 @@
 class Crocodile {
 
 private:
-    static const int initial_length = 4;
+    static const int initial_length = 10;
     static const float shape_size = 120.0;
     static const float dist_between_shapes = 60.0;
 

@@ -6,11 +6,14 @@ bindir := bin
 objdir := obj
 srcdir := src
 logdir := log
+gfxsrcdir := gfxsrc
+gfxbindir := gfxbin
 miscdir := misc
 
 target := $(bindir)/Crocodin
 srcs := $(wildcard $(srcdir)/*.cpp)
 objs := $(patsubst $(srcdir)/%.cpp, $(objdir)/%.o, $(srcs))
+resources := $(gfxbindir)/head.png $(gfxbindir)/nose.png $(gfxbindir)/body.png
 
 ######### programs
 SHELL = /bin/sh
@@ -52,7 +55,7 @@ memcheckflags := \
 
 ######### make targets
 .PHONY: all
-all: $(target)
+all: $(resources) $(target)
 
 .PHONY: check
 check: all
@@ -67,6 +70,7 @@ clean:
 	$(rm) -R $(objdir)
 	$(rm) -R $(bindir)
 	$(rm) -R $(logdir)
+	$(rm) -R $(gfxbindir)
 
 ######### build rules
 $(bindir)/%: $(objs) | $(bindir)
@@ -75,7 +79,10 @@ $(bindir)/%: $(objs) | $(bindir)
 $(objdir)/%.o: $(srcdir)/%.cpp $(MAKEFILE_LIST) | $(objdir)
 	$(compile)
 
-$(objdir) $(bindir) $(logdir):
+$(gfxbindir)/%.png: $(gfxsrcdir)/crocodile.svg $(MAKEFILE_LIST) | $(gfxbindir)
+	inkscape --without-gui --file=$< --export-png=$@ --export-id=$*
+
+$(objdir) $(bindir) $(logdir) $(gfxbindir):
 	$(mkdir) $@
 
 ######### dependency tracking

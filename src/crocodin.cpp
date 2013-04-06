@@ -3,7 +3,7 @@
 
 bool Crocodin::run() {
     // load textures
-    const char* textures[] = { "gfx/head.png", "gfx/nose.png", "gfx/body.png" };
+    const char* textures[] = { "gfxbin/head.png", "gfxbin/nose.png", "gfxbin/body.png" };
     for (unsigned i = 0; i < sizeof(textures)/sizeof(const char*); i++) {
         std::shared_ptr<sf::Texture> texture;
         texture = resources.get<sf::Texture>(textures[i]);
