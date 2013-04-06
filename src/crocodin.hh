@@ -1,10 +1,13 @@
 #ifndef CROCODIN_HH
 #define CROCODIN_HH
 
+#include <string>
+
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
 #include "crocodile.hh"
+#include "resources.hh"
 
 class Crocodin {
 
@@ -15,8 +18,8 @@ public:
 
 private:
     sf::RenderWindow window;
-    Crocodile crocodile;
-
+    Crocodile* crocodile;
+    Resources resources;
 };
 
 #endif

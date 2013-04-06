@@ -1,0 +1,15 @@
+{
+   Leak of GL context in SFML
+   Memcheck:Leak
+   fun:calloc
+   ...
+   fun:glXGetConfig
+   fun:_ZN2sf4priv10GlxContext13createContextEPS1_jRKNS_15ContextSettingsE
+   fun:_ZN2sf4priv10GlxContextC1EPS1_
+   fun:_ZN2sf4priv9GlContext10globalInitEv
+   fun:_ZN2sf10GlResourceC1Ev
+   fun:_ZN2sf6WindowC1Ev
+   fun:_ZN2sf12RenderWindowC1Ev
+   fun:_ZN8CrocodinC1Ev
+   fun:main
+}

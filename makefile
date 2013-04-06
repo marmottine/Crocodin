@@ -5,6 +5,8 @@
 bindir := bin
 objdir := obj
 srcdir := src
+logdir := log
+miscdir := misc
 
 target := $(bindir)/Crocodin
 srcs := $(wildcard $(srcdir)/*.cpp)
@@ -13,7 +15,8 @@ objs := $(patsubst $(srcdir)/%.cpp, $(objdir)/%.o, $(srcs))
 ######### programs
 SHELL = /bin/sh
 compile = $(strip g++ -c $< -o $@ $(cppflags) $(cxxflags))
-link = $(strip g++ $^ -o $@ $(cxxflags) $(ldflags)) 
+link = $(strip g++ $^ -o $@ $(cxxflags) $(ldflags))
+memcheck = valgrind $(memcheckflags) $(target) 2>&1 | tee $(logdir)/memcheck.txt
 rm := rm -f
 mkdir := mkdir -p
 
@@ -40,6 +43,13 @@ ldflags := \
 	-rdynamic \
 	$(shell pkg-config $(pkgdepend) --libs)
 
+######### valgrind flags
+memcheckflags := \
+	--leak-check=full \
+	--num-callers=32 \
+	--gen-suppressions=all \
+	--suppressions=$(miscdir)/memcheck.supp
+
 ######### make targets
 .PHONY: all
 all: $(target)
@@ -48,10 +58,15 @@ all: $(target)
 check: all
 	./$(target)
 
-.PHONY: clean
+.PHONY: memcheck
+memcheck: all | $(logdir)
+	$(memcheck)
+
+PHONY: clean
 clean:
 	$(rm) -R $(objdir)
 	$(rm) -R $(bindir)
+	$(rm) -R $(logdir)
 
 ######### build rules
 $(bindir)/%: $(objs) | $(bindir)
@@ -60,7 +75,7 @@ $(bindir)/%: $(objs) | $(bindir)
 $(objdir)/%.o: $(srcdir)/%.cpp $(MAKEFILE_LIST) | $(objdir)
 	$(compile)
 
-$(objdir) $(bindir):
+$(objdir) $(bindir) $(logdir):
 	$(mkdir) $@
 
 ######### dependency tracking

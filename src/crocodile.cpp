@@ -3,44 +3,29 @@
 
 #include "crocodile.hh"
 
-sf::Texture gfxHead;
-sf::Texture gfxNose;
-sf::Texture gfxBody;
-
-Crocodile::Crocodile(): position(10, 20), direction(1,0), speed(0.0001) {
-
-    if (!gfxHead.loadFromFile("gfx/head.png")) {
-        std::cout << "fail to load gfx/head.png\n";
-        abort();
-    }
-
-    if (!gfxNose.loadFromFile("gfx/nose.png")) {
-        std::cout << "fail to load gfx/nose.png\n";
-        abort();
-    }
-
-    if (!gfxBody.loadFromFile("gfx/body.png")) {
-        std::cout << "fail to load gfx/body.png\n";
-        abort();
-    }
-
+Crocodile::Crocodile(Resources& resources):
+        position(10, 20), direction(1,0), speed(0.0001),
+        gfxNose(resources.get<sf::Texture>("gfx/nose.png")),
+        gfxHead(resources.get<sf::Texture>("gfx/head.png")),
+        gfxBody(resources.get<sf::Texture>("gfx/body.png"))
+{
     shapes.resize(initial_length);
 
     // create the nose
     sf::Sprite& nose = shapes[0];
-    nose.setTexture(gfxNose);
+    nose.setTexture(*gfxNose);
     nose.setPosition(sf::Vector2f(60.0, 60.0));
 
     // create the head
     sf::Sprite& head = shapes[1];
-    head.setTexture(gfxHead);
+    head.setTexture(*gfxHead);
     head.setPosition(sf::Vector2f(80.0, 60.0));
 
     // create the body
     // start at 2 to compensate for the nose and head
     for (int i = 2; i < initial_length; ++i) {
         sf::Sprite& body = shapes[i];
-        body.setTexture(gfxBody);
+        body.setTexture(*gfxBody);
         body.setPosition(sf::Vector2f(60 + 60*i, 0));
     }
 }

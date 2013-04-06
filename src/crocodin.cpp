@@ -2,6 +2,17 @@
 #include "crocodin.hh"
 
 bool Crocodin::run() {
+    // load textures
+    const char* textures[] = { "gfx/head.png", "gfx/nose.png", "gfx/body.png" };
+    for (unsigned i = 0; i < sizeof(textures)/sizeof(const char*); i++) {
+        std::shared_ptr<sf::Texture> texture;
+        texture = resources.get<sf::Texture>(textures[i]);
+        //texture->setSmooth(true);
+    }
+
+    crocodile = new Crocodile(resources);
+
+    // create window
     const sf::VideoMode& desktop = sf::VideoMode::getDesktopMode();
     unsigned depth = desktop.bitsPerPixel;
     unsigned stencil = 8;
@@ -36,7 +47,7 @@ bool Crocodin::run() {
             // user request to close the window
             case sf::Event::Closed:
                 window.close();
-                return true;
+                goto cleanup;
             case sf::Event::Resized:
                 break;
             case sf::Event::KeyPressed:
@@ -65,13 +76,16 @@ bool Crocodin::run() {
         window.display();
     }
 
+cleanup:
+    delete crocodile;
+
     return true;
 }
 
 void Crocodin::update(sf::Time elapsed, sf::Vector2f direction) {
-    crocodile.move(direction, elapsed);
+    crocodile->move(direction, elapsed);
 }
 
 void Crocodin::draw() {
-    crocodile.draw(window);
+    crocodile->draw(window);
 }
