@@ -17,8 +17,8 @@ bool Crocodin::run() {
     unsigned depth = desktop.bitsPerPixel;
     unsigned stencil = 8;
     unsigned antialiasing = 4;
-    unsigned width = 800;
-    unsigned height = 600;
+    unsigned width = 1024;
+    unsigned height = 768;
     unsigned left = (desktop.width - width) / 2;
     unsigned top = (desktop.height - height) / 2;
     bool vsync = true;
