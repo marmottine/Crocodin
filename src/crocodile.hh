@@ -7,7 +7,7 @@
 class Crocodile {
 
 private:
-    static const int initial_length = 3;
+    static const int initial_length = 4;
 
 public:
     Crocodile();
@@ -16,7 +16,7 @@ public:
     void move(sf::Vector2f direction, sf::Time elapsed_time);
 
 private:
-    std::vector<sf::Shape*> shapes;
+    std::vector<sf::Sprite> shapes;
     sf::Vector2f position;
     sf::Vector2f direction;
     float speed;

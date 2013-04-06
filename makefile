@@ -31,7 +31,7 @@ cppflags := \
 
 ######### flags to both compiler and linker
 cxxflags := \
-	-g \
+	-O0 -g \
 	-fmessage-length=0 \
 	$(shell pkg-config $(pkgdepend) --cflags-only-other)
 
@@ -44,8 +44,8 @@ ldflags := \
 .PHONY: all
 all: $(target)
 
-.PHONY: test
-test: all
+.PHONY: check
+check: all
 	./$(target)
 
 .PHONY: clean
