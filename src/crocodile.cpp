@@ -1,4 +1,3 @@
-#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -57,13 +56,9 @@ sf::Vector2f Crocodile::get_new_position(unsigned dist_to_head) {
         accumulated_dist += dist;
 
         if (accumulated_dist >= dist_to_head) {
-            std::cout << "shape_it is somewhere between " << point.x << " "
-                    << point.y << " and " << previous_point.x << " "
-                    << previous_point.y << "\n";
-            // shape_it is somewhere between previous_point and point.
-            sf::Vector2f new_pos = point
-                    + point_difference
-                            * ((accumulated_dist - dist_to_head) / dist);
+            // new_pos is somewhere between previous_point and point.
+            float ratio = (accumulated_dist - dist_to_head) / dist;
+            sf::Vector2f new_pos = point + point_difference * ratio;
             return new_pos;
         }
         previous_point = point;
@@ -72,13 +67,6 @@ sf::Vector2f Crocodile::get_new_position(unsigned dist_to_head) {
 }
 
 void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
-
-    std::cout << "path before move: ";
-    std::list<sf::Vector2f>::iterator point_it;
-    for (point_it = path.begin(); point_it != path.end(); ++point_it) {
-        std::cout << "(" << point_it->x << "," << point_it->y << ") ";
-    }
-    std::cout << "\n";
 
     sf::Int64 elapsed_ms = elapsed_time.asMicroseconds();
 
@@ -93,17 +81,9 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
     if (direction == previous_direction) {
         path.front() = position;
     }
-    if (direction != previous_direction) {
+    else {
         path.push_front(position);
     }
-
-    std::cout << "path after move: ";
-    for (point_it = path.begin(); point_it != path.end(); ++point_it) {
-        std::cout << "(" << point_it->x << "," << point_it->y << ") ";
-    }
-    std::cout << "\n";
-
-
 
     sf::Shape& head = *(*(shapes.begin()));
     head.setPosition(position);
@@ -111,18 +91,13 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
     std::vector<sf::Shape*>::iterator shape_it;
     unsigned dist_to_head = 0;
     for (shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
+        // skip head
         if (shape_it == shapes.begin()) {
             continue;
         }
 
-        std::cout << "old pos " << (*shape_it)->getPosition().x << " " << (*shape_it)->getPosition().y << "\n";
-
         dist_to_head += dist_between_shapes;
         sf::Vector2f new_pos = get_new_position(dist_to_head);
         (*shape_it)->setPosition(new_pos);
-
-        std::cout << "new pos " << (*shape_it)->getPosition().x << " " << (*shape_it)->getPosition().y << "\n";
     }
-
-
 }
