@@ -1,27 +1,49 @@
+#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 #include <assert.h>
 
 #include "crocodile.hh"
 
+sf::Texture gfxHead;
+sf::Texture gfxNose;
+sf::Texture gfxBody;
+
 Crocodile::Crocodile(): position(60, 100), direction(1,0), speed(0.0001) {
 
+    if (!gfxHead.loadFromFile("gfx/head.png")) {
+        std::cout << "fail to load gfx/head.png\n";
+        abort();
+    }
+
+    if (!gfxNose.loadFromFile("gfx/nose.png")) {
+        std::cout << "fail to load gfx/nose.png\n";
+        abort();
+    }
+
+    if (!gfxBody.loadFromFile("gfx/body.png")) {
+        std::cout << "fail to load gfx/body.png\n";
+        abort();
+    }
+
+    shapes.resize(initial_length);
+
+    // create the nose
+    sf::Sprite& nose = shapes[0];
+    nose.setTexture(gfxNose);
+    nose.setPosition(sf::Vector2f(60.0, 60.0));
+
     // create the head
-    sf::Vector2f dim(shape_size, shape_size);
-    sf::RectangleShape* head = new sf::RectangleShape(dim);
-    head->setFillColor(sf::Color::Blue);
-    head->setPosition(position);
-    shapes.push_back(head);
+    sf::Sprite& head = shapes[1];
+    head.setTexture(gfxHead);
+    head.setPosition(sf::Vector2f(80.0, 60.0));
 
     // create the body
-    // start at 1 to compensate for the head
-    for (int i = 1; i < initial_length; ++i) {
-        float radius = shape_size / 2;
-        sf::CircleShape* body_part = new sf::CircleShape(radius);
-        body_part->setFillColor(sf::Color::Green);
-        body_part->setPosition(position
-                - sf::Vector2f(dist_between_shapes * i, 0.0));
-        shapes.push_back(body_part);
+    // start at 2 to compensate for the nose and head
+    for (int i = 2; i < initial_length; ++i) {
+        sf::Sprite& body = shapes[i];
+        body.setTexture(gfxBody);
+        body.setPosition(sf::Vector2f(60 + 60*i, 0));
     }
 
     // record first position
@@ -30,16 +52,12 @@ Crocodile::Crocodile(): position(60, 100), direction(1,0), speed(0.0001) {
 }
 
 Crocodile::~Crocodile() {
-    std::vector<sf::Shape*>::iterator shape_it;
-    for (shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
-        delete *shape_it;
-    }
 }
 
 void Crocodile::draw(sf::RenderWindow& window) {
-    std::vector<sf::Shape*>::iterator shape_it;
+    std::vector<sf::Sprite>::iterator shape_it;
     for (shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
-        window.draw(**shape_it);
+       window.draw(*shape_it);
     }
 }
 
@@ -85,10 +103,10 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
         path.push_front(position);
     }
 
-    sf::Shape& head = *(*(shapes.begin()));
+    sf::Sprite& head = shapes.front();
     head.setPosition(position);
 
-    std::vector<sf::Shape*>::iterator shape_it;
+    std::vector<sf::Sprite>::iterator shape_it;
     unsigned dist_to_head = 0;
     for (shape_it = shapes.begin(); shape_it != shapes.end(); ++shape_it) {
         // skip head
@@ -98,6 +116,6 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
 
         dist_to_head += dist_between_shapes;
         sf::Vector2f new_pos = get_new_position(dist_to_head);
-        (*shape_it)->setPosition(new_pos);
+        shape_it->setPosition(new_pos);
     }
 }

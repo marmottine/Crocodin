@@ -1,0 +1,7 @@
+bin/
+obj/
+
+# eclipse crap
+.project
+.cproject
+.settings/

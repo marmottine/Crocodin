@@ -1,11 +1,15 @@
+#include <iostream>
 #include "crocodin.hh"
 
 bool Crocodin::run() {
-    unsigned depth = sf::VideoMode::getDesktopMode().bitsPerPixel;
-    unsigned stensil = 8;
+    const sf::VideoMode& desktop = sf::VideoMode::getDesktopMode();
+    unsigned depth = desktop.bitsPerPixel;
+    unsigned stencil = 8;
     unsigned antialiasing = 4;
     unsigned width = 800;
     unsigned height = 600;
+    unsigned left = (desktop.width - width) / 2;
+    unsigned top = (desktop.height - height) / 2;
     bool vsync = true;
     unsigned framerate = 60;
     bool fullscreen = false;
@@ -14,7 +18,8 @@ bool Crocodin::run() {
     window.create(sf::VideoMode(width, height, depth),
             title,
             (fullscreen ? sf::Style::Fullscreen : sf::Style::Default),
-            sf::ContextSettings(depth, stensil, antialiasing));
+            sf::ContextSettings(depth, stencil, antialiasing));
+    window.setPosition(sf::Vector2i(left, top));
     window.setVerticalSyncEnabled(vsync);
     window.setFramerateLimit(framerate);
 

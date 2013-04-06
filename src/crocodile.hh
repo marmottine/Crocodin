@@ -11,8 +11,8 @@ class Crocodile {
 
 private:
     static const int initial_length = 4;
-    static const float shape_size = 60.0;
-    static const float dist_between_shapes = 30.0;
+    static const float shape_size = 120.0;
+    static const float dist_between_shapes = 60.0;
 
 public:
     Crocodile();
@@ -21,7 +21,7 @@ public:
     void move(sf::Vector2f direction, sf::Time elapsed_time);
 
 private:
-    std::vector<sf::Shape*> shapes;
+    std::vector<sf::Sprite> shapes;
     sf::Vector2f position;
     sf::Vector2f direction;
     float speed;
