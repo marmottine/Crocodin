@@ -1,13 +1,14 @@
 #include <iostream>
-#include "crocodin.hh"
+
+#include "Crocodin.hpp"
 
 bool Crocodin::run() {
     // load textures
-    const char* textures[] = { "gfxbin/head.png", "gfxbin/nose.png", "gfxbin/body.png" };
+    const char* textures[] = { "gfx/head.png", "gfx/nose.png", "gfx/body.png" };
     for (unsigned i = 0; i < sizeof(textures)/sizeof(const char*); i++) {
         std::shared_ptr<sf::Texture> texture;
         texture = resources.get<sf::Texture>(textures[i]);
-        //texture->setSmooth(true);
+        texture->setSmooth(true);
     }
 
     crocodile = new Crocodile(resources);
@@ -24,7 +25,7 @@ bool Crocodin::run() {
     bool vsync = true;
     unsigned framerate = 60;
     bool fullscreen = false;
-    const std::string title("Super Crocro!");
+    const std::string title("Crocodin!");
 
     window.create(sf::VideoMode(width, height, depth),
             title,

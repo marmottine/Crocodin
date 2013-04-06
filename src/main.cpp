@@ -1,10 +1,8 @@
 #include <cstdlib>
 
-#include "crocodin.hh"
-
+#include "Crocodin.hpp"
 
 int main(int argc, char* argv[])  {
-
     Crocodin crocodin;
     if (crocodin.run()) {
         return EXIT_SUCCESS;
@@ -12,5 +10,4 @@ int main(int argc, char* argv[])  {
     else {
         return EXIT_FAILURE;
     }
-
 }

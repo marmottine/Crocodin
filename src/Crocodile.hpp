@@ -1,5 +1,5 @@
-#ifndef CROCODILE_HH
-#define CROCODILE_HH
+#ifndef CROCODILE_HPP
+#define CROCODILE_HPP
 
 #include <list>
 #include <vector>
@@ -7,7 +7,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
-#include "resources.hh"
+#include "Resources.hpp"
 
 class Crocodile {
 

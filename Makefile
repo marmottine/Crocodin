@@ -3,23 +3,23 @@
 
 ######### directories
 bindir := bin
+bingfxdir := bin/gfx
 objdir := obj
 srcdir := src
 logdir := log
-gfxsrcdir := gfxsrc
-gfxbindir := gfxbin
+gfxdir := gfx
 miscdir := misc
 
 target := $(bindir)/Crocodin
 srcs := $(wildcard $(srcdir)/*.cpp)
 objs := $(patsubst $(srcdir)/%.cpp, $(objdir)/%.o, $(srcs))
-resources := $(gfxbindir)/head.png $(gfxbindir)/nose.png $(gfxbindir)/body.png
+resources := $(bingfxdir)/head.png $(bingfxdir)/nose.png $(bingfxdir)/body.png
 
 ######### programs
 SHELL = /bin/sh
 compile = $(strip g++ -c $< -o $@ $(cppflags) $(cxxflags))
 link = $(strip g++ $^ -o $@ $(cxxflags) $(ldflags))
-memcheck = valgrind $(memcheckflags) $(target) 2>&1 | tee $(logdir)/memcheck.txt
+memcheck = valgrind $(memcheckflags) ../$(target) 2>&1 | tee ../$(logdir)/memcheck.txt
 rm := rm -f
 mkdir := mkdir -p
 
@@ -51,7 +51,7 @@ memcheckflags := \
 	--leak-check=full \
 	--num-callers=32 \
 	--gen-suppressions=all \
-	--suppressions=$(miscdir)/memcheck.supp
+	--suppressions=../$(miscdir)/memcheck.supp
 
 ######### make targets
 .PHONY: all
@@ -59,30 +59,30 @@ all: $(resources) $(target)
 
 .PHONY: check
 check: all
-	./$(target)
+	cd $(bindir) && ../$(target)
 
 .PHONY: memcheck
 memcheck: all | $(logdir)
-	$(memcheck)
+	cd $(bindir) && $(memcheck)
 
 PHONY: clean
 clean:
 	$(rm) -R $(objdir)
 	$(rm) -R $(bindir)
 	$(rm) -R $(logdir)
-	$(rm) -R $(gfxbindir)
+	$(rm) -R $(bingfxdir)
 
 ######### build rules
-$(bindir)/%: $(objs) | $(bindir)
+$(target): $(objs) | $(bindir)
 	$(link)
 
 $(objdir)/%.o: $(srcdir)/%.cpp $(MAKEFILE_LIST) | $(objdir)
 	$(compile)
 
-$(gfxbindir)/%.png: $(gfxsrcdir)/crocodile.svg $(MAKEFILE_LIST) | $(gfxbindir)
+$(bingfxdir)/%.png: $(gfxdir)/crocodile.svg $(MAKEFILE_LIST) | $(bingfxdir)
 	inkscape --without-gui --file=$< --export-png=$@ --export-id=$*
 
-$(objdir) $(bindir) $(logdir) $(gfxbindir):
+$(objdir) $(bindir) $(logdir) $(bingfxdir):
 	$(mkdir) $@
 
 ######### dependency tracking

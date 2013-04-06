@@ -1,5 +1,5 @@
-#ifndef RESOURCES_HH
-#define RESOURCES_HH
+#ifndef RESOURCES_HPP
+#define RESOURCES_HPP
 
 #include <string>
 
@@ -31,6 +31,6 @@ private:
 template<typename T>
 std::shared_ptr<T> loadResource(const std::string& path);
 
-#include "resources.tpp"
+#include "Resources.tpp"
 
 #endif

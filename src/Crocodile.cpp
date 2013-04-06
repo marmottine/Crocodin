@@ -1,15 +1,15 @@
 #include <iostream>
-#include <math.h>
-#include <stdlib.h>
-#include <assert.h>
+#include <cmath>
+#include <cstdlib>
+#include <cassert>
 
-#include "crocodile.hh"
+#include "Crocodile.hpp"
 
 Crocodile::Crocodile(Resources& resources):
         position(60, 100), direction(1,0), speed(0.0001),
-        gfxNose(resources.get<sf::Texture>("gfxbin/nose.png")),
-        gfxHead(resources.get<sf::Texture>("gfxbin/head.png")),
-        gfxBody(resources.get<sf::Texture>("gfxbin/body.png"))
+        gfxNose(resources.get<sf::Texture>("gfx/nose.png")),
+        gfxHead(resources.get<sf::Texture>("gfx/head.png")),
+        gfxBody(resources.get<sf::Texture>("gfx/body.png"))
 {
     shapes.resize(initial_length);
 
