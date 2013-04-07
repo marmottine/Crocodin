@@ -4,12 +4,9 @@
 #include <deque>
 #include <vector>
 
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include "Engine.hpp"
 
-#include "Resources.hpp"
-
-class Crocodile {
+class Crocodile: public Listener<UpdateEvent>, public Listener<RenderEvent> {
 
 private:
     static const int initial_length = 7;
@@ -18,10 +15,13 @@ private:
     static const float curve_radius = 200.0;
 
 public:
-    explicit Crocodile(Resources& resources);
-    ~Crocodile();
-    void draw(sf::RenderWindow& window);
-    void move(sf::Vector2f direction, sf::Time elapsed_time);
+    explicit Crocodile(Engine& engine);
+    virtual ~Crocodile();
+    virtual void update(sf::Time elapsed_time);
+    virtual void render(sf::RenderWindow& window);
+
+    // set by the level, so public for now, maybe move keypress to here?
+    sf::Vector2f new_direction;
 
 private:
     std::vector<sf::Sprite> sprites;
@@ -42,6 +42,5 @@ private:
     // TODO: remove points when the body is no longer at these points.
     std::deque<PathChunk> path;
 };
-
 
 #endif

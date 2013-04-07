@@ -5,12 +5,14 @@
 
 #include "Crocodile.hpp"
 
-Crocodile::Crocodile(Resources& resources):
+Crocodile::Crocodile(Engine& engine):
+Listener<UpdateEvent>(engine.state.updateListeners),
+Listener<RenderEvent>(engine.state.renderListeners),
         direction(1,0),
         speed(0.0001),
-        gfxNose(resources.get<sf::Texture>("gfx/nose.png")),
-        gfxHead(resources.get<sf::Texture>("gfx/head.png")),
-        gfxBody(resources.get<sf::Texture>("gfx/body.png"))
+        gfxNose(engine.resources.get<sf::Texture>("gfx/nose.png")),
+        gfxHead(engine.resources.get<sf::Texture>("gfx/head.png")),
+        gfxBody(engine.resources.get<sf::Texture>("gfx/body.png"))
 {
     sprites.resize(initial_length);
 
@@ -51,15 +53,14 @@ Crocodile::Crocodile(Resources& resources):
 Crocodile::~Crocodile() {
 }
 
-void Crocodile::draw(sf::RenderWindow& window) {
+void Crocodile::render(sf::RenderWindow& window) {
     std::vector<sf::Sprite>::iterator shape_it;
     for (shape_it = sprites.begin(); shape_it != sprites.end(); ++shape_it) {
         window.draw(*shape_it);
     }
 }
 
-void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
-
+void Crocodile::update(sf::Time elapsed_time) {
     sf::Vector2f previous_direction = direction;
     if (new_direction != sf::Vector2f(0, 0)) {
         direction = new_direction;
@@ -149,6 +150,5 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
             chunk_dist_to_head += chunk->length;
 
         }
-
     }
 }
