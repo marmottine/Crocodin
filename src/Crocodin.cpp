@@ -1,8 +1,10 @@
 #include <iostream>
 
 #include "Crocodin.hpp"
+#include "Screens.hpp"
 
-bool Crocodin::run() {
+
+Crocodin::Crocodin(sf::RenderWindow& window): window(window) {
     // load textures
     const char* textures[] = { "gfx/head.png", "gfx/nose.png", "gfx/body.png" };
     for (unsigned i = 0; i < sizeof(textures)/sizeof(const char*); i++) {
@@ -12,28 +14,13 @@ bool Crocodin::run() {
     }
 
     crocodile = new Crocodile(resources);
+}
 
-    // create window
-    const sf::VideoMode& desktop = sf::VideoMode::getDesktopMode();
-    unsigned depth = desktop.bitsPerPixel;
-    unsigned stencil = 8;
-    unsigned antialiasing = 4;
-    unsigned width = 1024;
-    unsigned height = 768;
-    unsigned left = (desktop.width - width) / 2;
-    unsigned top = (desktop.height - height) / 2;
-    bool vsync = true;
-    unsigned framerate = 60;
-    bool fullscreen = false;
-    const std::string title("Crocodin!");
+Crocodin::~Crocodin() {
+    delete crocodile;
+}
 
-    window.create(sf::VideoMode(width, height, depth),
-            title,
-            (fullscreen ? sf::Style::Fullscreen : sf::Style::Default),
-            sf::ContextSettings(depth, stencil, antialiasing));
-    window.setPosition(sf::Vector2i(left, top));
-    window.setVerticalSyncEnabled(vsync);
-    window.setFramerateLimit(framerate);
+int Crocodin::run() {
 
     sf::Clock clock;
 
@@ -64,6 +51,9 @@ bool Crocodin::run() {
                 else if (event.key.code == sf::Keyboard::Down) {
                     direction = sf::Vector2f(0, 1);
                 }
+                else if (event.key.code == sf::Keyboard::Escape) {
+                    return Screens::MENU;
+                }
                 break;
             default:
                 break;
@@ -78,9 +68,9 @@ bool Crocodin::run() {
     }
 
 cleanup:
-    delete crocodile;
 
-    return true;
+    // exit application
+    return -1;
 }
 
 void Crocodin::update(sf::Time elapsed, sf::Vector2f direction) {

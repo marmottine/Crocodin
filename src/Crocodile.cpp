@@ -69,7 +69,8 @@ sf::Vector2f Crocodile::get_new_position(unsigned dist_to_head) {
         }
         previous_point = point;
     }
-    assert(false);
+    // should not reach this point, return a default to be safe
+    return sf::Vector2f(0.0, 0.0);
 }
 
 void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
@@ -93,8 +94,7 @@ void Crocodile::move(sf::Vector2f new_direction, sf::Time elapsed_time) {
 
     sf::Sprite& head = shapes.front();
     head.setPosition(position);
-    head.setRotation(atan2(-shifting.y,
-            -shifting.x) * 180 / M_PI);
+    head.setRotation(atan2(-shifting.y, -shifting.x) * 180 / M_PI);
 
     // skip head
     std::vector<sf::Sprite>::iterator cur_shape = shapes.begin();

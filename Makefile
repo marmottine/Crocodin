@@ -9,11 +9,14 @@ srcdir := src
 logdir := log
 gfxdir := gfx
 miscdir := misc
+fontdir := fonts
+binfontdir := bin/fonts
 
 target := $(bindir)/Crocodin
 srcs := $(wildcard $(srcdir)/*.cpp)
 objs := $(patsubst $(srcdir)/%.cpp, $(objdir)/%.o, $(srcs))
-resources := $(bingfxdir)/head.png $(bingfxdir)/nose.png $(bingfxdir)/body.png
+resources := $(bingfxdir)/head.png $(bingfxdir)/nose.png $(bingfxdir)/body.png \
+	$(binfontdir)/arial.ttf
 
 ######### programs
 SHELL = /bin/sh
@@ -71,6 +74,7 @@ clean:
 	$(rm) -R $(bindir)
 	$(rm) -R $(logdir)
 	$(rm) -R $(bingfxdir)
+	$(rm) -R $(binfontdir)
 
 ######### build rules
 $(target): $(objs) | $(bindir)
@@ -81,8 +85,11 @@ $(objdir)/%.o: $(srcdir)/%.cpp $(MAKEFILE_LIST) | $(objdir)
 
 $(bingfxdir)/%.png: $(gfxdir)/crocodile.svg $(MAKEFILE_LIST) | $(bingfxdir)
 	inkscape --without-gui --file=$< --export-png=$@ --export-id=$*
+	
+$(binfontdir)/%.ttf: $(fontdir)/%.ttf | $(binfontdir)
+	cp $< $@
 
-$(objdir) $(bindir) $(logdir) $(bingfxdir):
+$(objdir) $(bindir) $(logdir) $(bingfxdir) $(binfontdir):
 	$(mkdir) $@
 
 ######### dependency tracking

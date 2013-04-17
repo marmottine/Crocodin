@@ -8,15 +8,18 @@
 
 #include "Crocodile.hpp"
 #include "Resources.hpp"
+#include "Screen.hpp"
 
-class Crocodin {
+class Crocodin: public Screen {
 public:
-    bool run();
+    Crocodin(sf::RenderWindow& window);
+    ~Crocodin();
+    int run();
     void update(sf::Time elapsed, sf::Vector2f direction);
     void draw();
 
 private:
-    sf::RenderWindow window;
+    sf::RenderWindow& window;
     Crocodile* crocodile;
     Resources resources;
 };

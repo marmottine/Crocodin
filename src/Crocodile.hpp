@@ -32,7 +32,7 @@ private:
     std::shared_ptr<sf::Texture> gfxBody;
 
     // points where the crocodile made a turn.
-    // points are removed when the body is no longer at these points.
+    // TODO: remove points when the body is no longer at these points.
     std::list<sf::Vector2f> path;
     sf::Vector2f get_new_position(unsigned dist_to_head);
 };
