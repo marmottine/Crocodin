@@ -9,10 +9,12 @@
 class Crocodile: public Listener<UpdateEvent>, public Listener<RenderEvent> {
 
 private:
+    // at least 2 for the nose and the eyes.
     static const int initial_length = 7;
+
     static const float shape_size = 120.0;
     static const float dist_between_sprites = 60.0;
-    static const float curve_radius = 200.0;
+    static const float curve_radius = 100.0;
 
 public:
     explicit Crocodile(Engine& engine);
@@ -39,7 +41,6 @@ private:
     };
 
     // points where the crocodile changed direction.
-    // TODO: remove points when the body is no longer at these points.
     std::deque<PathChunk> path;
 };
 

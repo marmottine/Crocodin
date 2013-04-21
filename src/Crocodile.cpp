@@ -6,10 +6,10 @@
 #include "Crocodile.hpp"
 
 Crocodile::Crocodile(Engine& engine):
-Listener<UpdateEvent>(engine.state.updateListeners),
-Listener<RenderEvent>(engine.state.renderListeners),
+        Listener<UpdateEvent>(engine.state.updateListeners),
+        Listener<RenderEvent>(engine.state.renderListeners),
         direction(1,0),
-        speed(0.0001),
+        speed(0.0002),
         gfxNose(engine.resources.get<sf::Texture>("gfx/nose.png")),
         gfxHead(engine.resources.get<sf::Texture>("gfx/head.png")),
         gfxBody(engine.resources.get<sf::Texture>("gfx/body.png"))
@@ -61,6 +61,7 @@ void Crocodile::render(sf::RenderWindow& window) {
 }
 
 void Crocodile::update(sf::Time elapsed_time) {
+
     sf::Vector2f previous_direction = direction;
     if (new_direction != sf::Vector2f(0, 0)) {
         direction = new_direction;
@@ -114,18 +115,64 @@ void Crocodile::update(sf::Time elapsed_time) {
                 sf::Vector2f shifting = chunk->to * offset;
                 new_pos = chunk->position + shifting;
             } else { // curve
-                // See http://en.wikipedia.org/wiki/Bezier_curve
-                float t = offset / (M_PI * curve_radius / 2.0f);
-                sf::Vector2f P0 = chunk->position;
-                sf::Vector2f P1 = P0 + chunk->from * curve_radius;
-                sf::Vector2f P2 = P1 + chunk->to * curve_radius;
-                new_pos = (P0 * ((1.0f - t) * (1.0f - t))) + (P1 * (2.0f * (1.0f - t) * t)) + (P2 * (t * t));
+
+                // theta is the angle travelled along on the current path chunk
+                float theta = offset / curve_radius;
+
+                float absolute_angle;
+
+                if (chunk->from == sf::Vector2f(1.0, 0.0)
+                        && chunk->to == sf::Vector2f(0.0, 1.0)) {
+                    absolute_angle = - M_PI / 2.0 + theta;
+
+                } else if (chunk->from == sf::Vector2f(1.0, 0.0)
+                        && chunk->to == sf::Vector2f(0.0, -1.0)) {
+                    absolute_angle = + M_PI / 2.0 - theta;
+
+                } else if (chunk->from == sf::Vector2f(-1.0, 0.0)
+                        && chunk->to == sf::Vector2f(0.0, 1.0)) {
+                    absolute_angle = - M_PI / 2.0 - theta;
+
+                } else if (chunk->from == sf::Vector2f(-1.0, 0.0)
+                        && chunk->to == sf::Vector2f(0.0, -1.0)) {
+                    absolute_angle = M_PI / 2.0 + theta;
+
+                } else if (chunk->from == sf::Vector2f(0.0, 1.0)
+                        && chunk->to == sf::Vector2f(1.0, 0.0)) {
+                    absolute_angle = M_PI - theta;
+
+                } else if (chunk->from == sf::Vector2f(0.0, 1.0)
+                        && chunk->to == sf::Vector2f(-1.0, 0.0)) {
+                    absolute_angle = + theta;
+
+                } else if (chunk->from == sf::Vector2f(0.0, -1.0)
+                        && chunk->to == sf::Vector2f(1.0, 0.0)) {
+                    absolute_angle = M_PI + theta;
+
+                } else if (chunk->from == sf::Vector2f(0.0, -1.0)
+                        && chunk->to == sf::Vector2f(-1.0, 0.0)) {
+                    absolute_angle = - theta;
+
+                } else {
+                    std::cout << "should not happen" << std::endl;
+                    exit(1);
+                }
+
+                // coordinates of the new position, relative to the circle centre
+                float x = cos(absolute_angle) * curve_radius;
+                float y = sin(absolute_angle) * curve_radius;
+
+                sf::Vector2f circle_centre = chunk->position + chunk->to * curve_radius;
+
+                new_pos = circle_centre + sf::Vector2f(x, y);
+
             }
 
             sprite->setPosition(new_pos);
 
-            sprite->setRotation(atan2(-new_pos.y + prev_pos.y,
-                    -new_pos.x + prev_pos.x) * 180 / M_PI);
+            sprite->setRotation(
+                    atan2(-new_pos.y + prev_pos.y, -new_pos.x + prev_pos.x)
+                    * 180 / M_PI);
 
             sprite++;
 
@@ -136,6 +183,7 @@ void Crocodile::update(sf::Time elapsed_time) {
                 path.erase(chunk, path.end());
                 break;
             }
+
             sprite_dist_to_head += dist_between_sprites;
 
         }
