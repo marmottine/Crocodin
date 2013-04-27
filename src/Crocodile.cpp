@@ -63,7 +63,10 @@ void Crocodile::render(sf::RenderWindow& window) {
 void Crocodile::update(sf::Time elapsed_time) {
 
     sf::Vector2f previous_direction = direction;
-    if (new_direction != sf::Vector2f(0, 0)) {
+    bool key_pressed = (new_direction != sf::Vector2f(0, 0));
+    bool u_turn = (new_direction == - direction);
+    bool already_doing_a_turn = (path.front().length < 0);
+    if (key_pressed && ! u_turn && ! already_doing_a_turn) {
         direction = new_direction;
     }
 
@@ -111,9 +114,11 @@ void Crocodile::update(sf::Time elapsed_time) {
             sf::Vector2f new_pos;
             // offset is the distance ran on the current path chunk
             float offset = chunk_dist_to_head - sprite_dist_to_head;
+
             if (chunk->from == chunk->to) { // straight line
                 sf::Vector2f shifting = chunk->to * offset;
                 new_pos = chunk->position + shifting;
+
             } else { // curve
 
                 // theta is the angle travelled along on the current path chunk
